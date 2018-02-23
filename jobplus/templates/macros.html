@@ -1,0 +1,36 @@
+{% macro render_form(form, url) %}
+<form class="form-horizontal" method="POST" action="{{ url }}">
+    {{ form.csrf_token }}
+    {% for field in form %}
+        {% if field.type == 'CSRFTokenField' %}
+          {{ '' }}
+        {% elif field.type == 'SubmitField' %}
+        <div class="form-group">  
+          <div class="col-sm-offset-4 col-sm-4">
+          {{ form.submit(class="btn btn-primary", type='submit') }}
+          </div>
+        </div>
+        {% elif field.type == 'BooleanField' %}
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-4">
+            <div class="checkbox">
+              <label>{{ field }}{{ field.label }}</label>
+            </div>
+          </div>
+        </div>
+        {% else %}
+          <div class="form-group {% if field.errors %}has-error{% endif %}">
+            {{ field.label(class="col-sm-4 control-label") }} 
+            <div class="col-sm-4">
+              {{ field(class='form-control') }}
+            </div>
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <span class="help-block">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endif %}
+    {% endfor %}
+</form>
+{% endmacro %}
